@@ -80,20 +80,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if( (player_y + nextValue) < 0 || (player_y + nextValue) >= GROUND_LIMIT )
                 return 0;
         }else{
-            // x축도 동일
             if( (player_x + nextValue) < 0 || (player_x + nextValue) >= GROUND_LIMIT )
                 return 0;
         }
-
         // 장애물 체크
         if(direction.equals("y")){
-            if(map[player_y+nextValue][player_x] == 1)
-                return 0;
+            // 내가 진행할방향의 다음 칸
+            int temp_y = player_y + nextValue;
+            // 내가 진행할 y축 방향의 다음칸이 1이면
+            if(map[temp_y][player_x] == 1) {
+                // 다음다음칸에 장애물이 있거나, 범위를 넘어서면 0
+                if(        temp_y + nextValue < 0
+                        || temp_y + nextValue >= GROUND_LIMIT
+                        || map[ temp_y +nextValue ][player_x] != 0) {
+                    return 0;
+                // 다음다음칸이 빈칸이면 다음칸의 장애물을 다음다음칸으로 이동시킨다
+                } else {
+                    map[temp_y][player_x] = 0;
+                    map[temp_y+nextValue][player_x] = 1;
+                }
+            }
         }else{
-            if(map[player_y][player_x+nextValue] == 1)
-                return 0;
+            int temp_x = player_x + nextValue;
+            if(map[player_y][temp_x] == 1) {
+                if( temp_x + nextValue < 0
+                        || temp_x + nextValue >= GROUND_LIMIT
+                        || map[player_y][temp_x+nextValue] != 0) {
+                    return 0;
+                }else{
+                    map[player_y][temp_x] = 0;
+                    map[player_y][temp_x + nextValue] = 1;
+                }
+            }
         }
-
         return nextValue;
     }
 
